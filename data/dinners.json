@@ -1,0 +1,116 @@
+[
+  {
+    "id": "1",
+    "name": "Spaghetti Bolognese",
+    "status": "family-favourite",
+    "rating": 5,
+    "notes": "Classic family go-to. Double the batch and freeze half for an easy weeknight.",
+    "tags": [
+      "pasta",
+      "italian",
+      "kid-friendly",
+      "freezer-friendly"
+    ],
+    "dateMade": "2026-03-31",
+    "createdAt": "2026-01-10T10:00:00.000Z",
+    "updatedAt": "2026-03-31T06:25:22.380Z"
+  },
+  {
+    "id": "2",
+    "name": "Chicken Stir Fry",
+    "status": "made-before",
+    "rating": 3,
+    "notes": "Quick and easy but felt a bit plain. Try adding oyster sauce next time.",
+    "tags": [
+      "asian",
+      "quick",
+      "chicken"
+    ],
+    "dateMade": "2026-03-31",
+    "createdAt": "2026-01-15T10:00:00.000Z",
+    "updatedAt": "2026-03-31T21:25:45.391Z"
+  },
+  {
+    "id": "3",
+    "name": "Homemade Pizza",
+    "status": "family-favourite",
+    "rating": 5,
+    "notes": "Friday night tradition. Everyone makes their own toppings — big hit.",
+    "tags": [
+      "italian",
+      "kid-friendly",
+      "weekend",
+      "fun"
+    ],
+    "dateMade": "2026-03-21",
+    "createdAt": "2026-01-20T10:00:00.000Z",
+    "updatedAt": "2026-03-21T18:00:00.000Z"
+  },
+  {
+    "id": "4",
+    "name": "Thai Green Curry",
+    "status": "want-to-try",
+    "tags": [
+      "thai",
+      "curry"
+    ],
+    "notes": "Saw a great looking recipe — want to try for a weekend dinner.",
+    "createdAt": "2026-03-01T10:00:00.000Z",
+    "updatedAt": "2026-03-01T10:00:00.000Z"
+  },
+  {
+    "id": "5",
+    "name": "Mushroom Risotto",
+    "status": "not-again",
+    "rating": 1,
+    "notes": "Took 45 minutes of constant stirring and the kids refused to touch it.",
+    "tags": [
+      "italian",
+      "vegetarian"
+    ],
+    "dateMade": "2026-03-31",
+    "createdAt": "2026-01-25T10:00:00.000Z",
+    "updatedAt": "2026-03-31T21:30:34.921Z",
+    "timesMade": 1
+  },
+  {
+    "name": "Schnitzel",
+    "recipeLink": "https://www.recipetineats.com/schnitzel/",
+    "status": "family-favourite",
+    "rating": 5,
+    "tags": [
+      "chicken"
+    ],
+    "dateMade": "2026-03-31",
+    "id": "10f2508f-fd80-4822-ab89-861bd08ad79c",
+    "createdAt": "2026-03-31T05:35:29.665Z",
+    "updatedAt": "2026-03-31T21:31:18.440Z",
+    "timesMade": 1
+  },
+  {
+    "name": "Green chicken",
+    "status": "made-before",
+    "rating": 5,
+    "notes": "Always a winnder",
+    "tags": [
+      "BBQ"
+    ],
+    "dateMade": "2026-03-22",
+    "id": "6bb3ed2b-b117-40d3-aee7-f90213328d4e",
+    "createdAt": "2026-03-31T05:58:22.579Z",
+    "updatedAt": "2026-03-31T05:58:22.579Z"
+  },
+  {
+    "name": "Swedish meatballs",
+    "status": "made-before",
+    "rating": 4,
+    "tags": [
+      "swedish",
+      "chicken",
+      "turkey"
+    ],
+    "id": "dd65b29f-31a7-4d14-9060-cc985a05ee5b",
+    "createdAt": "2026-03-31T21:55:58.203Z",
+    "updatedAt": "2026-03-31T21:55:58.203Z"
+  }
+]
