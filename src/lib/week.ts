@@ -1,14 +1,18 @@
-import fs from 'fs';
-import path from 'path';
+import { redis } from './redis';
 import { WeekPlan } from '@/types/dinner';
 
-const WEEK_FILE = path.join(process.cwd(), 'data', 'week.json');
+const KEY = 'week';
 
-export function getWeek(): WeekPlan {
-  const raw = fs.readFileSync(WEEK_FILE, 'utf-8');
-  return JSON.parse(raw) as WeekPlan;
+const EMPTY_WEEK: WeekPlan = {
+  monday: null, tuesday: null, wednesday: null, thursday: null,
+  friday: null, saturday: null, sunday: null,
+};
+
+export async function getWeek(): Promise<WeekPlan> {
+  const data = await redis.get<WeekPlan>(KEY);
+  return data ?? EMPTY_WEEK;
 }
 
-export function saveWeek(week: WeekPlan): void {
-  fs.writeFileSync(WEEK_FILE, JSON.stringify(week, null, 2));
+export async function saveWeek(week: WeekPlan): Promise<void> {
+  await redis.set(KEY, week);
 }

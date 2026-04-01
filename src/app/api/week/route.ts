@@ -3,11 +3,11 @@ import { getWeek, saveWeek } from '@/lib/week';
 import { WeekPlan } from '@/types/dinner';
 
 export async function GET() {
-  return NextResponse.json(getWeek());
+  return NextResponse.json(await getWeek());
 }
 
 export async function PUT(req: NextRequest) {
   const body: WeekPlan = await req.json();
-  saveWeek(body);
+  await saveWeek(body);
   return NextResponse.json(body);
 }

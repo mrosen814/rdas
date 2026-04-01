@@ -3,9 +3,9 @@ import { getWeek } from '@/lib/week';
 import DinnerBoard from '@/components/DinnerBoard';
 import WeekPlanner from '@/components/WeekPlanner';
 
-export default function Home() {
-  const dinners = getDinners();
-  const week = getWeek();
+export default async function Home() {
+  const dinners = await getDinners();
+  const week = await getWeek();
   return (
     <>
       <DinnerBoard initialDinners={dinners} />

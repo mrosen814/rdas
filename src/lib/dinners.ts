@@ -1,14 +1,13 @@
-import fs from 'fs';
-import path from 'path';
+import { redis } from './redis';
 import { Dinner } from '@/types/dinner';
 
-const DATA_FILE = path.join(process.cwd(), 'data', 'dinners.json');
+const KEY = 'dinners';
 
-export function getDinners(): Dinner[] {
-  const raw = fs.readFileSync(DATA_FILE, 'utf-8');
-  return JSON.parse(raw) as Dinner[];
+export async function getDinners(): Promise<Dinner[]> {
+  const data = await redis.get<Dinner[]>(KEY);
+  return data ?? [];
 }
 
-export function saveDinners(dinners: Dinner[]): void {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(dinners, null, 2));
+export async function saveDinners(dinners: Dinner[]): Promise<void> {
+  await redis.set(KEY, dinners);
 }

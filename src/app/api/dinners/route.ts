@@ -3,12 +3,12 @@ import { getDinners, saveDinners } from '@/lib/dinners';
 import { DinnerInput } from '@/types/dinner';
 
 export async function GET() {
-  return NextResponse.json(getDinners());
+  return NextResponse.json(await getDinners());
 }
 
 export async function POST(req: NextRequest) {
   const body: DinnerInput = await req.json();
-  const dinners = getDinners();
+  const dinners = await getDinners();
   const now = new Date().toISOString();
   const newDinner = {
     ...body,
@@ -17,6 +17,6 @@ export async function POST(req: NextRequest) {
     updatedAt: now,
   };
   dinners.push(newDinner);
-  saveDinners(dinners);
+  await saveDinners(dinners);
   return NextResponse.json(newDinner, { status: 201 });
 }
