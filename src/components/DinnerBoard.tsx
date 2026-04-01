@@ -5,7 +5,6 @@ import { Dinner, DinnerInput, DinnerStatus, RATING_LABELS } from '@/types/dinner
 import DinnerCard from './DinnerCard';
 import DinnerForm from './DinnerForm';
 import DinnerStats from './DinnerStats';
-import HaventMadeInAWhile from './HaventMadeInAWhile';
 
 const STATUS_FILTERS: Array<{ value: DinnerStatus | 'all'; label: string }> = [
   { value: 'all', label: 'All' },
@@ -56,6 +55,7 @@ export default function DinnerBoard({ initialDinners }: Props) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingDinner, setEditingDinner] = useState<Dinner | null>(null);
   const [suggestion, setSuggestion] = useState<Dinner | null>(null);
+  const [showHaventMade, setShowHaventMade] = useState(false);
 
   // Apply status filter first; rating pill counts reflect the active status selection
   const statusFiltered = dinners.filter(
@@ -70,6 +70,14 @@ export default function DinnerBoard({ initialDinners }: Props) {
         d.name.toLowerCase().includes(search.toLowerCase()) ||
         d.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()))
     );
+
+  // Haven't made in a while: made at least once, not "not-again", sorted oldest-first
+  const haventMadeCandidates = dinners
+    .filter(d => d.dateMade && d.status !== 'not-again')
+    .sort((a, b) => (a.dateMade! < b.dateMade! ? -1 : a.dateMade! > b.dateMade! ? 1 : 0))
+    .slice(0, 5);
+
+  const displayDinners = showHaventMade ? haventMadeCandidates : filtered;
 
   async function handleAdd(data: DinnerInput) {
     const res = await fetch('/api/dinners', {
@@ -124,7 +132,7 @@ export default function DinnerBoard({ initialDinners }: Props) {
       {/* Header */}
       <div className="mb-6 flex items-start justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-3xl font-black text-red-600 leading-tight tracking-tight">
+          <h1 className="text-3xl font-black text-red-600 leading-tight tracking-[0.06em]">
             R-DAS
           </h1>
           <p className="text-sm font-medium text-gray-700 mt-0.5">
@@ -196,15 +204,15 @@ export default function DinnerBoard({ initialDinners }: Props) {
             return (
               <button
                 key={value}
-                onClick={() => setStatusFilter(value)}
+                onClick={() => { setStatusFilter(value); setShowHaventMade(false); }}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                  statusFilter === value
+                  statusFilter === value && !showHaventMade
                     ? 'bg-black text-white'
                     : 'bg-white text-black border border-gray-300 hover:border-black'
                 }`}
               >
                 {label}
-                <span className={`ml-1.5 text-xs ${statusFilter === value ? 'opacity-70' : 'opacity-40'}`}>
+                <span className={`ml-1.5 text-xs ${statusFilter === value && !showHaventMade ? 'opacity-70' : 'opacity-40'}`}>
                   ({count})
                 </span>
               </button>
@@ -221,45 +229,66 @@ export default function DinnerBoard({ initialDinners }: Props) {
             return (
               <button
                 key={value}
-                onClick={() => setRatingFilter(value)}
+                onClick={() => { setRatingFilter(value); setShowHaventMade(false); }}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                  ratingFilter === value
+                  ratingFilter === value && !showHaventMade
                     ? 'bg-black text-white'
                     : 'bg-white text-black border border-gray-300 hover:border-black'
                 }`}
               >
                 {label}
-                <span className={`ml-1.5 text-xs ${ratingFilter === value ? 'opacity-70' : 'opacity-40'}`}>
+                <span className={`ml-1.5 text-xs ${ratingFilter === value && !showHaventMade ? 'opacity-70' : 'opacity-40'}`}>
                   ({count})
                 </span>
               </button>
             );
           })}
         </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowHaventMade((prev) => !prev)}
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+              showHaventMade
+                ? 'bg-black text-white'
+                : 'bg-white text-black border border-gray-300 hover:border-black'
+            }`}
+          >
+            Haven&apos;t made in a while
+            <span className={`ml-1.5 text-xs ${showHaventMade ? 'opacity-70' : 'opacity-40'}`}>
+              ({haventMadeCandidates.length})
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* Search */}
-      <div className="mb-6">
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by name or tag..."
-          className="w-full max-w-xs border border-gray-300 rounded-lg px-3 py-2 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
-        />
-      </div>
+      {!showHaventMade && (
+        <div className="mb-6">
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by name or tag..."
+            className="w-full max-w-xs border border-gray-300 rounded-lg px-3 py-2 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
+          />
+        </div>
+      )}
+      {showHaventMade && <div className="mb-6" />}
 
       {/* Dinner grid */}
-      {filtered.length === 0 ? (
+      {displayDinners.length === 0 ? (
         <div className="text-center py-20 text-gray-400">
-          <p className="text-lg font-medium">No dinners found</p>
-          {dinners.length === 0 && (
+          <p className="text-lg font-medium">
+            {showHaventMade ? 'No overdue dinners' : 'No dinners found'}
+          </p>
+          {!showHaventMade && dinners.length === 0 && (
             <p className="text-sm mt-1">Add your first dinner to get started.</p>
           )}
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map((dinner) => (
+          {displayDinners.map((dinner) => (
             <DinnerCard
               key={dinner.id}
               dinner={dinner}
@@ -270,26 +299,25 @@ export default function DinnerBoard({ initialDinners }: Props) {
         </div>
       )}
 
-      {/* Dinner stats + Haven't made in a while */}
+      {/* Dinner stats */}
       <DinnerStats dinners={dinners} />
-      <HaventMadeInAWhile
-        dinners={dinners}
-        onCookAgain={handleCookAgain}
-        onEdit={setEditingDinner}
-      />
 
       {/* Modal */}
       {isModalOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              setShowAddForm(false);
-              setEditingDinner(null);
-            }
-          }}
         >
-          <div className="bg-white border border-black rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto p-6">
+          <div className="relative bg-white border border-black rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto p-6">
+            <button
+              onClick={() => { setShowAddForm(false); setEditingDinner(null); }}
+              className="absolute top-4 right-4 text-gray-400 hover:text-black transition-colors"
+              aria-label="Close"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <line x1="2" y1="2" x2="14" y2="14"/>
+                <line x1="14" y1="2" x2="2" y2="14"/>
+              </svg>
+            </button>
             <h2 className="text-lg font-semibold text-black mb-4">
               {editingDinner ? `Edit: ${editingDinner.name}` : 'Add Dinner'}
             </h2>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <!-- Knob: abstract robot-head reference (geometric rect + sensor dot) -->
+  <rect x="26" y="5" width="12" height="9" rx="2" fill="#E11D48"/>
+  <circle cx="32" cy="9.5" r="2" fill="white"/>
+
+  <!-- Stem connecting knob to dome -->
+  <rect x="30" y="13" width="4" height="6" fill="#E11D48"/>
+
+  <!-- Cloche dome (half-ellipse) -->
+  <path d="M12 52 A 20 34 0 0 1 52 52 Z" fill="#E11D48"/>
+
+  <!-- Base plate -->
+  <rect x="8" y="52" width="48" height="8" rx="4" fill="#E11D48"/>
+</svg>
