@@ -14,14 +14,6 @@ const STATUS_FILTERS: Array<{ value: DinnerStatus | 'all'; label: string }> = [
   { value: 'not-again', label: 'Not Again' },
 ];
 
-const RATING_FILTERS: Array<{ value: number | 'all'; label: string }> = [
-  { value: 'all', label: 'All ratings' },
-  { value: 5, label: '5★' },
-  { value: 4, label: '4★' },
-  { value: 3, label: '3★' },
-  { value: 2, label: '2★' },
-  { value: 1, label: '1★' },
-];
 
 /**
  * Pick a random dinner, weighted by rating.
@@ -71,13 +63,13 @@ export default function DinnerBoard({ initialDinners }: Props) {
         d.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()))
     );
 
-  // Haven't made in a while: made at least once, not "not-again", sorted oldest-first
-  const haventMadeCandidates = dinners
-    .filter(d => d.dateMade && d.status !== 'not-again')
-    .sort((a, b) => (a.dateMade! < b.dateMade! ? -1 : a.dateMade! > b.dateMade! ? 1 : 0))
-    .slice(0, 5);
-
-  const displayDinners = showHaventMade ? haventMadeCandidates : filtered;
+  // Haven't made in a while: additive filter on top of other filters
+  const displayDinners = showHaventMade
+    ? filtered
+        .filter(d => d.dateMade && d.status !== 'not-again')
+        .sort((a, b) => (a.dateMade! < b.dateMade! ? -1 : a.dateMade! > b.dateMade! ? 1 : 0))
+        .slice(0, 5)
+    : filtered;
 
   async function handleAdd(data: DinnerInput) {
     const res = await fetch('/api/dinners', {
@@ -194,7 +186,8 @@ export default function DinnerBoard({ initialDinners }: Props) {
       )}
 
       {/* Filters */}
-      <div className="flex flex-col gap-2 mb-4">
+      <div className="flex flex-col gap-3 mb-6">
+        {/* Row 1: Category pills */}
         <div className="flex items-center gap-2 flex-wrap">
           {STATUS_FILTERS.map(({ value, label }) => {
             const count =
@@ -204,15 +197,15 @@ export default function DinnerBoard({ initialDinners }: Props) {
             return (
               <button
                 key={value}
-                onClick={() => { setStatusFilter(value); setShowHaventMade(false); }}
+                onClick={() => setStatusFilter(value)}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                  statusFilter === value && !showHaventMade
+                  statusFilter === value
                     ? 'bg-black text-white'
                     : 'bg-white text-black border border-gray-300 hover:border-black'
                 }`}
               >
                 {label}
-                <span className={`ml-1.5 text-xs ${statusFilter === value && !showHaventMade ? 'opacity-70' : 'opacity-40'}`}>
+                <span className={`ml-1.5 text-xs ${statusFilter === value ? 'opacity-70' : 'opacity-40'}`}>
                   ({count})
                 </span>
               </button>
@@ -220,51 +213,46 @@ export default function DinnerBoard({ initialDinners }: Props) {
           })}
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
-          {RATING_FILTERS.map(({ value, label }) => {
-            const count =
-              value === 'all'
-                ? statusFiltered.length
-                : statusFiltered.filter((d) => d.rating === value).length;
-            return (
-              <button
-                key={value}
-                onClick={() => { setRatingFilter(value); setShowHaventMade(false); }}
-                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                  ratingFilter === value && !showHaventMade
-                    ? 'bg-black text-white'
-                    : 'bg-white text-black border border-gray-300 hover:border-black'
-                }`}
-              >
-                {label}
-                <span className={`ml-1.5 text-xs ${ratingFilter === value && !showHaventMade ? 'opacity-70' : 'opacity-40'}`}>
-                  ({count})
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowHaventMade((prev) => !prev)}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-              showHaventMade
-                ? 'bg-black text-white'
-                : 'bg-white text-black border border-gray-300 hover:border-black'
-            }`}
+        {/* Row 2: Rating dropdown + haven't made toggle */}
+        <div className="flex items-center gap-4 flex-wrap">
+          <select
+            value={ratingFilter}
+            onChange={(e) => setRatingFilter(e.target.value === 'all' ? 'all' : Number(e.target.value))}
+            className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm text-black bg-white focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
           >
-            Haven&apos;t made in a while
-            <span className={`ml-1.5 text-xs ${showHaventMade ? 'opacity-70' : 'opacity-40'}`}>
-              ({haventMadeCandidates.length})
-            </span>
-          </button>
-        </div>
-      </div>
+            <option value="all">All ratings</option>
+            <option value="5">5★</option>
+            <option value="4">4★</option>
+            <option value="3">3★</option>
+            <option value="2">2★</option>
+            <option value="1">1★</option>
+          </select>
 
-      {/* Search */}
-      {!showHaventMade && (
-        <div className="mb-6">
+          <div className="flex items-center gap-2">
+            <button
+              role="switch"
+              aria-checked={showHaventMade}
+              onClick={() => setShowHaventMade((prev) => !prev)}
+              className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${
+                showHaventMade ? 'bg-black' : 'bg-gray-200'
+              }`}
+              aria-label="Haven't made in a while"
+            >
+              <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                showHaventMade ? 'translate-x-5' : 'translate-x-0.5'
+              }`} />
+            </button>
+            <span
+              className="text-sm text-gray-600 cursor-pointer select-none"
+              onClick={() => setShowHaventMade((prev) => !prev)}
+            >
+              Haven&apos;t made in a while
+            </span>
+          </div>
+        </div>
+
+        {/* Row 3: Search */}
+        <div>
           <input
             type="text"
             value={search}
@@ -273,8 +261,7 @@ export default function DinnerBoard({ initialDinners }: Props) {
             className="w-full max-w-xs border border-gray-300 rounded-lg px-3 py-2 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
           />
         </div>
-      )}
-      {showHaventMade && <div className="mb-6" />}
+      </div>
 
       {/* Dinner grid */}
       {displayDinners.length === 0 ? (
