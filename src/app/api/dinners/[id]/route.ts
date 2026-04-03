@@ -6,7 +6,9 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   const dinners = await getDinners();
   const idx = dinners.findIndex((d) => d.id === params.id);
   if (idx === -1) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-  dinners[idx] = { ...dinners[idx], ...body, updatedAt: new Date().toISOString() };
+  const updated: typeof dinners[number] = { ...dinners[idx], ...body, updatedAt: new Date().toISOString() };
+  if (updated.recipeLink === '') updated.recipeLink = undefined;
+  dinners[idx] = updated;
   await saveDinners(dinners);
   return NextResponse.json(dinners[idx]);
 }
