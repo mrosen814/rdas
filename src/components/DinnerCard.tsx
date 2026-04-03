@@ -6,6 +6,7 @@ import AddToWeekInline from './AddToWeekInline';
 
 const STATUS_STYLES: Record<string, string> = {
   'family-favourite': 'bg-black text-white',
+  'classic':          'bg-red-600 text-white',
   'made-before':      'bg-gray-200 text-black',
   'want-to-try':      'bg-white text-black border border-gray-400',
   'not-again':        'bg-gray-600 text-white',

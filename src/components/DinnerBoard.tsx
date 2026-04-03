@@ -9,6 +9,7 @@ import DinnerStats from './DinnerStats';
 const STATUS_FILTERS: Array<{ value: DinnerStatus | 'all'; label: string }> = [
   { value: 'all', label: 'All' },
   { value: 'family-favourite', label: 'Family Favourites' },
+  { value: 'classic', label: 'Classics' },
   { value: 'made-before', label: 'Made Before' },
   { value: 'want-to-try', label: 'Want to Try' },
   { value: 'not-again', label: 'Not Again' },

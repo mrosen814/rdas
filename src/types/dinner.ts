@@ -1,9 +1,10 @@
-export type DinnerStatus = 'want-to-try' | 'made-before' | 'family-favourite' | 'not-again';
+export type DinnerStatus = 'want-to-try' | 'made-before' | 'family-favourite' | 'classic' | 'not-again';
 
 export const STATUS_LABELS: Record<DinnerStatus, string> = {
   'want-to-try': 'Want to Try',
   'made-before': 'Made Before',
   'family-favourite': 'Family Favourite',
+  'classic': 'Classic',
   'not-again': 'Not Again',
 };
 
