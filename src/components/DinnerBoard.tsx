@@ -310,6 +310,7 @@ export default function DinnerBoard({ initialDinners }: Props) {
             </h2>
             <DinnerForm
               initial={editingDinner ?? undefined}
+              existingDinners={dinners}
               onSave={editingDinner ? handleEdit : handleAdd}
               onDelete={editingDinner ? () => handleDelete(editingDinner.id) : undefined}
               onCancel={() => {
