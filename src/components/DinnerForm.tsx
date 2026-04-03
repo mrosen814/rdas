@@ -23,7 +23,7 @@ function jaccardSimilarity(a: string, b: string): number {
   const wa = wordSet(a);
   const wb = wordSet(b);
   const intersection = Array.from(wa).filter(w => wb.has(w)).length;
-  const union = new Set([...wa, ...wb]).size;
+  const union = new Set(Array.from(wa).concat(Array.from(wb))).size;
   return union === 0 ? 0 : intersection / union;
 }
 
