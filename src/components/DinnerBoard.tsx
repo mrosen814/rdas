@@ -70,6 +70,7 @@ interface Props {
 export default function DinnerBoard({ initialDinners }: Props) {
   const [dinners, setDinners] = useState<Dinner[]>(initialDinners);
   const [mode, setMode] = useState<'topPicks' | 'all'>('topPicks');
+  const [topPicksSubMode, setTopPicksSubMode] = useState<'tonight' | 'week'>('tonight');
   const [statusFilter, setStatusFilter] = useState<DinnerStatus | 'all'>('all');
   const [ratingFilter, setRatingFilter] = useState<number | 'all'>('all');
   const [search, setSearch] = useState('');
@@ -78,13 +79,29 @@ export default function DinnerBoard({ initialDinners }: Props) {
   const [suggestion, setSuggestion] = useState<Dinner | null>(null);
   const [showHaventMade, setShowHaventMade] = useState(false);
 
-  // Top Picks: scored, sorted, capped
+  // Top Picks (Tonight): scored, sorted, capped
   const topPicks = dinners
     .filter(d => d.status !== 'not-again')
     .map(d => ({ dinner: d, score: scoreForTopPicks(d) }))
     .sort((a, b) => b.score - a.score)
     .slice(0, TOP_PICKS_COUNT)
     .map(x => x.dinner);
+
+  // Top Picks (This Week): same scoring but capped at 2 per status category for variety
+  const weekPicks = (() => {
+    const candidates = dinners
+      .filter(d => d.status !== 'not-again')
+      .map(d => ({ dinner: d, score: scoreForTopPicks(d) }))
+      .sort((a, b) => b.score - a.score);
+    const result: Dinner[] = [];
+    const countByStatus: Partial<Record<string, number>> = {};
+    for (const { dinner } of candidates) {
+      if (result.length >= 7) break;
+      const n = countByStatus[dinner.status] ?? 0;
+      if (n < 2) { result.push(dinner); countByStatus[dinner.status] = n + 1; }
+    }
+    return result;
+  })();
 
   // All Recipes: existing filter chain
   const statusFiltered = dinners.filter(
@@ -107,7 +124,9 @@ export default function DinnerBoard({ initialDinners }: Props) {
         .slice(0, 5)
     : filtered;
 
-  const displayDinners = mode === 'topPicks' ? topPicks : allDisplayDinners;
+  const displayDinners = mode === 'topPicks'
+    ? (topPicksSubMode === 'week' ? weekPicks : topPicks)
+    : allDisplayDinners;
 
   async function handleAdd(data: DinnerInput) {
     const res = await fetch('/api/dinners', {
@@ -331,11 +350,31 @@ export default function DinnerBoard({ initialDinners }: Props) {
         </div>
       )}
 
-      {/* Section label for Top Picks */}
+      {/* Top Picks sub-mode toggle + section label */}
       {mode === 'topPicks' && (
-        <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-4">
-          Top Picks for Tonight
-        </p>
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">
+            {topPicksSubMode === 'week' ? 'Top Picks for This Week' : 'Top Picks for Tonight'}
+          </p>
+          <div className="flex gap-1 bg-gray-100 p-0.5 rounded-lg">
+            <button
+              onClick={() => setTopPicksSubMode('tonight')}
+              className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
+                topPicksSubMode === 'tonight' ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-black'
+              }`}
+            >
+              Tonight
+            </button>
+            <button
+              onClick={() => setTopPicksSubMode('week')}
+              className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
+                topPicksSubMode === 'week' ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-black'
+              }`}
+            >
+              This Week
+            </button>
+          </div>
+        </div>
       )}
 
       {/* Dinner grid */}
