@@ -1,16 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Dinner, STATUS_LABELS, RATING_LABELS } from '@/types/dinner';
+import { Dinner, STATUS_LABELS, STATUS_COLORS, RATING_LABELS } from '@/types/dinner';
 import AddToWeekInline from './AddToWeekInline';
-
-const STATUS_STYLES: Record<string, string> = {
-  'family-favourite': 'bg-black text-white',
-  'classic':          'bg-red-600 text-white',
-  'made-before':      'bg-gray-200 text-black',
-  'want-to-try':      'bg-white text-black border border-gray-400',
-  'not-again':        'bg-gray-600 text-white',
-};
 
 interface Props {
   dinner: Dinner;
@@ -38,7 +30,7 @@ export default function DinnerCard({ dinner, onEdit, onCookAgain }: Props) {
       {/* Name + status */}
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-semibold text-black text-base leading-snug">{dinner.name}</h3>
-        <span className={`text-xs font-medium px-2 py-1 rounded-full whitespace-nowrap shrink-0 ${STATUS_STYLES[dinner.status]}`}>
+        <span className={`text-xs font-medium px-2 py-1 rounded-full whitespace-nowrap shrink-0 ${STATUS_COLORS[dinner.status].idle}`}>
           {STATUS_LABELS[dinner.status]}
         </span>
       </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Dinner, DinnerInput, DinnerStatus, RATING_LABELS } from '@/types/dinner';
+import { Dinner, DinnerInput, DinnerStatus, RATING_LABELS, STATUS_COLORS } from '@/types/dinner';
 import DinnerCard from './DinnerCard';
 import DinnerForm from './DinnerForm';
 import DinnerStats from './DinnerStats';
@@ -200,9 +200,13 @@ export default function DinnerBoard({ initialDinners }: Props) {
                 key={value}
                 onClick={() => setStatusFilter(value)}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                  statusFilter === value
-                    ? 'bg-black text-white'
-                    : 'bg-white text-black border border-gray-300 hover:border-black'
+                  value === 'all'
+                    ? statusFilter === value
+                      ? 'bg-black text-white'
+                      : 'bg-white text-black border border-gray-300 hover:border-black'
+                    : statusFilter === value
+                      ? STATUS_COLORS[value].active
+                      : STATUS_COLORS[value].idle
                 }`}
               >
                 {label}

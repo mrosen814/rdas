@@ -8,6 +8,15 @@ export const STATUS_LABELS: Record<DinnerStatus, string> = {
   'not-again': 'Not Again',
 };
 
+// Centralised colour map — used by filter chips and recipe card badges
+export const STATUS_COLORS: Record<DinnerStatus, { idle: string; active: string }> = {
+  'family-favourite': { idle: 'bg-white text-black border border-green-400',  active: 'bg-white text-black border border-green-600'  },
+  'classic':          { idle: 'bg-white text-black border border-blue-400',   active: 'bg-white text-black border border-blue-600'   },
+  'made-before':      { idle: 'bg-white text-black border border-purple-400', active: 'bg-white text-black border border-purple-600' },
+  'want-to-try':      { idle: 'bg-white text-black border border-yellow-400', active: 'bg-white text-black border border-yellow-600' },
+  'not-again':        { idle: 'bg-white text-black border border-red-400',    active: 'bg-white text-black border border-red-600'    },
+};
+
 export const RATING_LABELS: Record<number, string> = {
   5: 'Loved it',
   4: 'Liked it',
