@@ -181,18 +181,9 @@ export default function DinnerBoard({ initialDinners }: Props) {
       {/* Header */}
       <div className="mb-6 flex items-start justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-3xl font-black leading-tight tracking-[0.06em]">
-            <span className={STATUS_COLORS['family-favourite'].logoColor}>R</span>
-            <span className={STATUS_COLORS['classic'].logoColor}>-</span>
-            <span className={STATUS_COLORS['made-before'].logoColor}>D</span>
-            <span className={STATUS_COLORS['want-to-try'].logoColor}>A</span>
-            <span className={STATUS_COLORS['not-again'].logoColor}>S</span>
-          </h1>
+          <h1 className="text-4xl font-black leading-tight tracking-[0.06em] text-red-600">R-DAS</h1>
           <p className="text-sm font-medium text-gray-700 mt-0.5">
             Rosen Dinner Allocation System
-          </p>
-          <p className="text-gray-400 mt-1 text-xs">
-            {dinners.length} {dinners.length === 1 ? 'dinner' : 'dinners'} tracked
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -212,7 +203,8 @@ export default function DinnerBoard({ initialDinners }: Props) {
       </div>
 
       {/* Mode switch */}
-      <div className="flex gap-1 mb-6 bg-gray-100 p-1 rounded-xl w-fit">
+      <div className="flex items-center justify-between mb-6">
+      <div className="flex gap-1 bg-gray-100 p-1 rounded-xl w-fit">
         <button
           onClick={() => setMode('topPicks')}
           className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
@@ -229,6 +221,10 @@ export default function DinnerBoard({ initialDinners }: Props) {
         >
           All Recipes
         </button>
+      </div>
+      <p className="text-xs text-gray-400">
+        {dinners.length} {dinners.length === 1 ? 'dinner' : 'dinners'} tracked
+      </p>
       </div>
 
       {/* Tonight's suggestion */}
